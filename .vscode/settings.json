@@ -1,0 +1,9 @@
+{
+    "editor.insertSpaces": true,
+    "[json]": {
+        "editor.tabSize": 6
+    },
+    "[ruby]": {
+        "editor.tabSize": 2
+    }
+}
