@@ -1,0 +1,64 @@
+{
+  "variables": {
+    "cpus": "2",
+    "iso_checksum_type": "sha512",
+    "iso_checksum": null,
+    "iso_url": null,
+    "memory": "2048",
+    "temp": "{{env `TMP`}}",
+    "switch_name": "Internal",
+    "vm_name": null
+  },
+  "builders": [
+    {
+      "type": "hyperv-iso",
+      "cpus": "{{user `cpus`}}",
+      "headless": true,
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": "{{user `memory`}}",
+      "shutdown_command": "powershell f:/shutdown.ps1",
+      "shutdown_timeout": "12h",
+      "switch_name": "{{user `switch_name`}}",
+      "vm_name": "{{user `vm_name`}}",
+
+      "secondary_iso_images": [
+        "{{user `temp`}}\\{{user `vm_name`}}.unattend.iso",
+        "{{user `temp`}}\\provision.iso"
+      ],
+      "boot_wait": "0s",
+      "boot_command": [
+        "a<wait>a<wait>a"
+      ],
+
+      "generation": 2,
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "2h"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "scripts": [
+        "./scripts/prepare-setupcomplete.ps1",
+        "./scripts/compile-dotnet-assemblies.ps1",
+        "./scripts/optimize-volume.ps1",
+        "./scripts/zero-out-free-space.ps1"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "compression_level": 9,
+      "keep_input_artifact": false,
+      "output": "./boxes/{{user `vm_name`}}.{{.Provider}}.box",
+      "vagrantfile_template": "./resources/windows.vagrantfile.rb"
+    }
+  ]
+}
