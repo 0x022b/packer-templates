@@ -1,3 +1,7 @@
+Get-ScheduledTask -TaskPath "\Microsoft\Windows\.NET Framework\" `
+| Where-Object { $_.State -eq 'Ready' -and !$_.Triggers } `
+| Start-ScheduledTask
+
 while ($true) {
     $obj = Get-ScheduledTask -TaskPath "\Microsoft\Windows\.NET Framework\" `
     | Where-Object { $_.State -eq 'Running' } `
