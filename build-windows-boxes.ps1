@@ -7,6 +7,10 @@ Param(
     [string]$oscdimg = $env:OSCDIMG
 )
 
+if (!$packer) {
+    Write-Host "ERROR: Packer path not defined`n"
+    exit 1
+}
 if (!$oscdimg) {
     $oscdimg = ".\tools\oscdimg.exe"
 }
