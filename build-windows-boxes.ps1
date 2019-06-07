@@ -7,6 +7,12 @@ Param(
     [string]$oscdimg = $env:OSCDIMG
 )
 
+$tmp = $env:TMP
+$temp = $env:TEMP
+
+$env:TMP = "C:\Temp"
+$env:TEMP = "C:\Temp"
+
 if (!$packer) {
     Write-Host "ERROR: Packer path not defined`n"
     exit 1
@@ -36,3 +42,6 @@ Get-ChildItem -Filter '.\templates\windows-*.variables.json' `
 if (Test-Path "$env:TMP\provision.iso") {
     Remove-Item "$env:TMP\provision.iso"
 }
+
+$env:TMP = $tmp
+$env:TEMP = $temp
